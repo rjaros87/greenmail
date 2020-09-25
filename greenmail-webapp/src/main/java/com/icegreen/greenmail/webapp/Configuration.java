@@ -2,6 +2,7 @@ package com.icegreen.greenmail.webapp;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -49,16 +50,27 @@ public class Configuration {
     public static class User {
         String login;
         String password;
+        String email;
 
         public String getLogin() {
             return login;
+        }
+
+        public void setLogin(String login) {
+            this.login = login;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
         }
 
         public String getEmail() {
             return email;
         }
 
-        String email;
+        public void setEmail(String email) {
+            this.email = email;
+        }
     }
 
     private String defaultHostname;
@@ -94,6 +106,17 @@ public class Configuration {
 
     public void addUser(final User pUser) {
         users.add(pUser);
+    }
+
+    public void deleteUser(final String login) {
+        if (null != login && !login.isEmpty()) {
+            for(Iterator<User> iterator = users.iterator(); iterator.hasNext();) {
+                User user = iterator.next();
+                if (login.equals(user.getLogin())) {
+                    iterator.remove();
+                }
+            }
+        }
     }
 
     public List<User> getUsers() {
