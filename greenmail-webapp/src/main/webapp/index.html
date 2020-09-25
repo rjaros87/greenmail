@@ -41,6 +41,18 @@
             justify-content: center;
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var apiServer = location.href
+            if (apiServer.indexOf("#") > 0) {
+                apiServer = apiServer.slice(0, apiServer.indexOf("#") -1);
+            } else {
+                apiServer = apiServer.slice(0, -1);
+            }
+            
+            document.getElementsByTagName("rapi-doc")[0].setAttribute("server-url", apiServer)
+         });
+    </script>
 </head>
 <body>
 <rapi-doc spec-url="greenmail-openapi.yml"

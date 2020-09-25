@@ -25,6 +25,58 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/user/create:
+    post:
+      description: Create a GreenMail user
+      operationId: create_user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequest"
+            example:
+              login: "johny"
+              password: "mySuperPassword"
+              email: "johny.bravo@example.com"
+        description: Operation parameters required by this operation
+        required: true
+      responses:
+        '200':
+          description: Current configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Configuration"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/user/delete/{login}:
+    delete:
+      description: Remove a GreenMail user
+      operationId: delete_user
+      parameters:
+        - in: path
+          name: login
+          description: GreenMaul user login
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Current configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Configuration"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     Configuration:
@@ -39,20 +91,33 @@ components:
           type: "array"
           description: Configured users for authentication
           items:
-            $ref: "#/components/schemas/User"
+            $ref: "#/components/schemas/UserResponse"
         serviceConfigurations:
           type: array
           items:
             $ref: "#/components/schemas/ServiceConfiguration"
       required:
         - serviceConfigurations
-    User:
+    UserResponse:
       type: object
       required:
         - login
         - email
       properties:
         login:
+          type: string
+        email:
+          type: string
+    UserRequest:
+      type: object
+      required:
+        - login
+        - password
+        - email
+      properties:
+        login:
+          type: string
+        password:
           type: string
         email:
           type: string
