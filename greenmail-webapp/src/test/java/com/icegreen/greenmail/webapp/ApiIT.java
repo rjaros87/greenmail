@@ -3,6 +3,7 @@ package com.icegreen.greenmail.webapp;
 import java.io.File;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -60,6 +61,49 @@ public class ApiIT {
                 "'users':[" +
                 "{'login':'user1','email':'user1@localhost'}," +
                 "{'login':'user2','email':'user2@localhost'}" +
+                "]," +
+                "'serviceConfigurations':[" +
+                "{'protocol':'POP3','hostname':'127.0.0.1','port':10110}," +
+                "{'protocol':'SMTP','hostname':'127.0.0.1','port':10025}" +
+                "]" +
+                "}", response.readEntity(String.class).replaceAll("\"", "'"));
+    }
+    
+    @Test
+    public void testCreateUser() {
+        String newUser = "{\"login\":\"james\", \"password\":\"bond\", \"email\":\"james.bond@localhost\"}";
+        
+        Response response = root.path("api").path("user").path("create").request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.json(newUser), Response.class);
+        assertEquals(200, response.getStatus());
+        assertEquals("{" +
+                "'defaultHostname':'localhost'," +
+                "'portOffset':10000," +
+                "'users':[" +
+                "{'login':'user1','email':'user1@localhost'}," +
+                "{'login':'user2','email':'user2@localhost'}," +
+                "{'login':'james','email':'james.bond@localhost'}" +
+                "]," +
+                "'serviceConfigurations':[" +
+                "{'protocol':'POP3','hostname':'127.0.0.1','port':10110}," +
+                "{'protocol':'SMTP','hostname':'127.0.0.1','port':10025}" +
+                "]" +
+                "}", response.readEntity(String.class).replaceAll("\"", "'"));
+    }
+    
+    @Test
+    public void testDeleteUser() {
+       String userFromDefaultConfiguration = "user1";
+        
+        Response response = root.path("api").path("user").path("delete").path(userFromDefaultConfiguration).request(MediaType.APPLICATION_JSON_TYPE)
+                .delete(Response.class);
+        assertEquals(200, response.getStatus());
+        assertEquals("{" +
+                "'defaultHostname':'localhost'," +
+                "'portOffset':10000," +
+                "'users':[" +
+                "{'login':'user2','email':'user2@localhost'}," +
+                "{'login':'james','email':'james.bond@localhost'}" +
                 "]," +
                 "'serviceConfigurations':[" +
                 "{'protocol':'POP3','hostname':'127.0.0.1','port':10110}," +
