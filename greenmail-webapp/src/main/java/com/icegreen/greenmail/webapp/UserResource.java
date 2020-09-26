@@ -6,8 +6,7 @@ import com.icegreen.greenmail.user.UserException;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -21,7 +20,7 @@ public class UserResource {
     private @Context
     ServletContext context;
 
-    @PUT
+    @POST
     @Path("/create")
     @Produces("application/json")
     @Consumes("application/json")
@@ -30,14 +29,14 @@ public class UserResource {
         Managers managers = ContextHelper.getManagers(context);
 
         GreenMailUser greenMailUser = managers.getUserManager().getUser(user.login);
-        if (null == greenMailUser) {
+        if (greenMailUser == null) {
             try {
                 conf.addUser(user);
                 managers.getUserManager().createUser(
                     user.email, user.login, user.password
                 );
             } catch (UserException e) {
-                throw new IllegalStateException(e);
+                throw new IllegalStateException("There was problem adding user", e);
             }
         }
 
@@ -51,7 +50,7 @@ public class UserResource {
         Configuration conf = ContextHelper.getConfiguration(context);
         Managers managers = ContextHelper.getManagers(context);
 
-        if(null != login && !login.isEmpty()) {
+        if(login != null && !login.isEmpty()) {
             GreenMailUser greenMailUser = managers.getUserManager().getUser(login);
             if (null != greenMailUser) {
                 managers.getUserManager().deleteUser(greenMailUser);

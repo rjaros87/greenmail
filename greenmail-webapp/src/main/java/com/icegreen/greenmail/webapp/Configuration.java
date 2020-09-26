@@ -109,7 +109,7 @@ public class Configuration {
     }
 
     public void deleteUser(final String login) {
-        if (null != login && !login.isEmpty()) {
+        if (login != null && !login.isEmpty()) {
             for(Iterator<User> iterator = users.iterator(); iterator.hasNext();) {
                 User user = iterator.next();
                 if (login.equals(user.getLogin())) {
